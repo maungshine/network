@@ -18,6 +18,7 @@ class Post(models.Model):
         return {
             "post_id": self.id,
             "username": self.post_user.username,
+            "user_id": self.post_user.id,
             "timestamp": self.date_posted.strftime("%b %d %Y, %I:%M %p"),
             "content": self.content,
             "likes":

@@ -90,4 +90,24 @@ def profile(request, user_id):
         "email": user.email,
         "followers": [follower.following_user.username for follower in user.followers.all()],
         "following": [following.followed_user.username for following in user.followed_users.all()]
-    }], [post.serialize() for post in posts]], safe=False)    
+    }], [post.serialize() for post in posts]], safe=False)
+
+def is_following(request, check_id):
+    following = [following.followed_user.id for following in request.user.followed_users.all()]
+    print(following, check_id)
+    if check_id in following:
+        return JsonResponse({"is_following" : True})
+    return JsonResponse({"is_following" : False})
+
+def follow_or_unfollow(request, choice, user_id):
+    user = User.objects.get(pk=user_id)
+    if choice == 'follow':
+        toFollow = Following(following_user=request.user, followed_user=user)
+        toFollow.save()
+        return JsonResponse({'follow_or_unfollow' : 'followed'})
+    if choice == 'unfollow':
+        following = Following.objects.filter(following_user=request.user, followed_user=user)
+        following[0].delete()
+        return JsonResponse({'follow_or_unfollow' : 'unfollowed'})
+
+                
