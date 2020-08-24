@@ -14,16 +14,9 @@ class Post(models.Model):
     date_posted = models.DateTimeField(null=False, auto_now_add=True)
     content = models.TextField(null=False, blank=False)
 
-    def serialize(self):
-        return {
-            "post_id": self.id,
-            "username": self.post_user.username,
-            "user_id": self.post_user.id,
-            "timestamp": self.date_posted.strftime("%b %d %Y, %I:%M %p"),
-            "content": self.content,
-            "likes":
-            [like.liked_user.username for like in self.liked_users.all()]
-        }
+    @property
+    def liked(self):
+        return [like.liked_user for like in self.liked_users.all()]
 
     def __str__(self):
         return f"{self.post_user} posted a post on {self.date_posted}"

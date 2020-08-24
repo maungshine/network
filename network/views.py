@@ -146,5 +146,21 @@ def save_post(request, post_id):
         post.save()
         return JsonResponse({'message': 'successfully saved'})
 
+def like_post(request, post_id):
+        post = Post.objects.get(pk=post_id)
+        liked = Like.objects.filter(liked_user=request.user, liked_post=post)
+        if liked.exists():
+            for like_obj in liked:
+                like_obj.delete()
+            return JsonResponse({
+            'like_count':len([like for like in post.liked_users.all()]),
+            'like_or_unlike': 'unlike'
+            })
+        like = Like(liked_user=request.user, liked_post=post)
+        like.save()
+        return JsonResponse({
+            'like_count':len([like for like in post.liked_users.all()]),
+            'like_or_unlike': 'like'
+            })
 
                 
