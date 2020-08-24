@@ -1,4 +1,5 @@
 import json
+from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -10,7 +11,14 @@ from .models import User, Post, Like, Following
 
 
 def index(request):
-    return render(request, "network/index.html")
+    posts = Post.objects.order_by('date_posted').reverse()
+    p = Paginator(posts, 10)
+
+    page_number = request.GET.get('page')
+    page_obj = p.get_page(page_number)
+    return render(request, "network/index.html", {
+        'page_obj' : page_obj
+    })
 
 
 def login_view(request):
@@ -62,35 +70,55 @@ def register(request):
         return render(request, "network/register.html")
 
 
-def all_posts(request):
-    posts = Post.objects.order_by('date_posted').reverse()
-    return JsonResponse([post.serialize() for post in posts], safe=False)
+# def all_posts(request):
+#     posts = Post.objects.order_by('date_posted').reverse()
+#     p = Paginator([post.serialize() for post in posts], 5)
+#     return HttpResponse(request, )
 
 
 def create_post(request):
     if request.method == "POST":
         data = json.loads(request.body)
         post = Post(post_user=request.user, content=data.get("post_content"))
-        post.save()    
+        post.save()
+        return HttpResponseRedirect(reverse('index'))        
 
 
 def following(request):
     following_users = request.user.followed_users.all()
     following_posts = [user.followed_user.user_posts.all() for user in following_users]
     
-    posts = [post.serialize() for query in following_posts for post in query]
-    print(posts)
-    return JsonResponse(posts, safe=False)
+    posts = [post for query in following_posts for post in query]
+    p = Paginator(posts, 10)
+
+    page_number = request.GET.get('page')
+    page_obj = p.get_page(page_number)
+    return render(request, "network/index.html", {
+        'page_obj' : page_obj
+    })
 
 def profile(request, user_id):
     user = User.objects.get(pk=user_id)
     posts = user.user_posts.all()
-    return JsonResponse([[{
+    p = Paginator(posts, 10)
+
+    page_number = request.GET.get('page')
+    page_obj = p.get_page(page_number)
+    return render(request, 'network/profile.html', {
+        "user_id": user_id,
         "name": user.username,
         "email": user.email,
+        "is_following": request.user.id in [follower.following_user.id for follower in user.followers.all()],
         "followers": [follower.following_user.username for follower in user.followers.all()],
-        "following": [following.followed_user.username for following in user.followed_users.all()]
-    }], [post.serialize() for post in posts]], safe=False)
+        "following": [following.followed_user.username for following in user.followed_users.all()],
+        "page_obj" : page_obj})
+
+def follower_following(request, user_id):
+    user = User.objects.get(pk=user_id)
+    return JsonResponse({
+        'follower': len([follower for follower in user.followers.all()]),
+        'following': len([following for following in user.followed_users.all()])
+    })        
 
 def is_following(request, check_id):
     following = [following.followed_user.id for following in request.user.followed_users.all()]
@@ -109,5 +137,14 @@ def follow_or_unfollow(request, choice, user_id):
         following = Following.objects.filter(following_user=request.user, followed_user=user)
         following[0].delete()
         return JsonResponse({'follow_or_unfollow' : 'unfollowed'})
+
+def save_post(request, post_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        post = Post.objects.get(pk=post_id)
+        post.content = data.get('post_content')
+        post.save()
+        return JsonResponse({'message': 'successfully saved'})
+
 
                 

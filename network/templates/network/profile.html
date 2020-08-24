@@ -7,23 +7,24 @@
 {% endblock %}
 
 {% block body %} 
-    <div class="container">
-        <form id="post-form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="post-content">What do you want to post?</label>
-                <textarea class="form-control" name="post-content" id="post-content" placeholder="Write something here!"></textarea>
-            </div>
-            <div class="form-group">
-                <input class="btn btn-primary" type="submit" value="Post">
-            </div>
-        </form>
-    </div>
     
+    <div id="profile-div">
+        <div class="name"><h4 id="name">{{ name }}</h4></div>
+        <div class="no-of-follower"><span id="no-of-follower">{{ followers|length }} followers</span></div>
+        <div class="no-of-following"><span id="no-of-following">{{ following|length }} following</span></div>
+        <div class="email"><span id="email">{{ email }}</span></div>
+        {% if is_following and user_id != user.id %}
+        <button id="unfollow" onclick="follow_or_unfollow('unfollow',{{ user_id }})">Unfollow</button>
+        <button id="follow" style="display: none;" onclick="follow_or_unfollow('follow',{{ user_id }})">Follow</button>
+        {% elif not is_following and user_id != user.id %}
+        <button id="follow" onclick="follow_or_unfollow('follow',{{ user_id }})">Follow</button>
+        <button id="unfollow" style="display: none;" onclick="follow_or_unfollow('unfollow',{{ user_id }})">Unfollow</button>
+        {% endif %}
+    </div>
     <section id="main_page">
         {% for post in page_obj.object_list %}
         <div class="post"> 
-            <div class="username"><h5><a href="{% url 'profile' post.post_user.id %}">{{ post.post_user.username }}</a></h5></div>
+            <div class="username"><h5>{{ post.post_user.username }}</h5></div>
             <div class="content" id="post-{{ post.id }}"><p id="content-{{ post.id }}">{{ post.content }}</p></div>
             {% if user == post.post_user %}
             <button id="edit-post-{{ post.id }}" onclick="edit_post({{ post.id }})">Edit</button>
