@@ -1,54 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   const my_id = JSON.parse(document.querySelector("#user_id").textContent);
   document.querySelector("#post-form").addEventListener("submit", create_post);
-  // document.querySelector("#following").addEventListener("click", following);
-  // document.querySelector("#profile").addEventListener("click", () => profile(my_id));
-  // load_all_posts();
 });
 
-// function load_all_posts() {
-//   fetch("all_posts")
-//     .then((response) => response.json())
-//     .then((posts) => {
-//       load_posts(posts, "main_page");
-//     });
-// }
-
-// function load_posts(posts, id) {
-  
-//       console.log(posts)
-//       for (let i = 0; i < posts.length; i++) {
-//         console.log(posts[i]);
-//         const post = posts[i]
-//         const postDiv = document.createElement('div');
-//         postDiv.className = "container";
-
-//         const username = document.createElement('h5');
-//         username.innerHTML = post.username
-//         username.id = "post-username"
-        
-//         username.addEventListener('click', () => profile(post.user_id))
-
-//         const content = document.createElement('p');
-//         content.innerHTML = post.content
-
-//         postDiv.append(username)
-//         postDiv.append(content)
-//         postDiv.style.backgroundColor = '#dfdfdf'
-//         document.querySelector(`#${id}`).append(postDiv)
-//       }
-
-//       if(id === "main_page") {
-//         document.querySelector("#following_page").style.display = 'none';
-//         document.querySelector("#main_page").style.display = 'block';
-//         document.querySelector('#profile-div').style.display = 'none';
-//       } else if (id === "following_page") {
-//         document.querySelector("#following_page").style.display = 'block';
-//         document.querySelector("#main_page").style.display = 'none';
-//         document.querySelector('#profile-div').style.display = 'none';
-//       }
-    
-// }
 
 function create_post() {
   console.log('hello')
@@ -70,19 +24,10 @@ function following() {
   .then(response => response.json())
   .then((data) => {
     document.querySelector('#following_page').innerHTML = ""
-    // load_posts(data, "following_page");
   })
 }
 
 function profile(user_id) {
-  // fetch(`profile/${user_id}`)
-  // .then(response => response.json())
-  // .then((data) => {
-  //   console.log(data)
-  //   document.querySelector("#name").innerHTML = data[0][0].name
-  //   document.querySelector("#no-of-follower").innerHTML = data[0][0].followers.length + " follower(s)"
-  //   document.querySelector("#no-of-following").innerHTML = data[0][0].following.length + " following"
-  //   document.querySelector("#email").innerHTML = data[0][0].email
     
     fetch(`is_following/${user_id}`)
     .then(response => response.json())
@@ -101,12 +46,6 @@ function profile(user_id) {
       }
 
     })
-
-    // load_posts(data[1], "profile-div");
-
-    // document.querySelector("#main_page").style.display = 'none';
-    // document.querySelector("#following_page").style.display = 'none';
-    // document.querySelector("#profile-div").style.display = 'block';
   
 }
 

@@ -70,12 +70,6 @@ def register(request):
         return render(request, "network/register.html")
 
 
-# def all_posts(request):
-#     posts = Post.objects.order_by('date_posted').reverse()
-#     p = Paginator([post.serialize() for post in posts], 5)
-#     return HttpResponse(request, )
-
-
 def create_post(request):
     if request.method == "POST":
         data = json.loads(request.body)
