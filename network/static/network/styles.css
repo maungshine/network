@@ -1,3 +1,30 @@
 .bi-heart,.bi-heart-fill {
     cursor: pointer;
 }
+
+#main_page {
+    display: grid;
+    row-gap: 5px;
+}
+
+.post {
+
+    padding: 1em;
+    width: 50%;
+}
+
+.edit-button {
+    position: relative;
+    left: 515px;
+    bottom: 95px;
+}
+
+.paginator > nav {
+    display: inline-block;
+}
+
+.paginator {
+    padding: 1em 0em;
+    width: 50%;
+}
+
