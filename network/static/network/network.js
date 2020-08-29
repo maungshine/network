@@ -56,10 +56,10 @@ function follow_or_unfollow (choice, user_id) {
     console.log(result)
     if(choice === 'follow') {
       document.querySelector("#follow").style.display = 'none';
-      document.querySelector("#unfollow").style.display = 'block';
+      document.querySelector("#unfollow").style.display = 'inline-block';
     } else {
       document.querySelector("#unfollow").style.display = 'none';
-      document.querySelector("#follow").style.display = 'block';
+      document.querySelector("#follow").style.display = 'inline-block';
     }
 
   fetch(`follower_following/${user_id}`)

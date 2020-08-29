@@ -8,17 +8,17 @@
 
 {% block body %} 
     
-    <div id="profile-div">
+    <div id="profile-div" class="container profile">
         <div class="name"><h4 id="name">{{ name }}</h4></div>
         <div class="no-of-follower"><span id="no-of-follower">{{ followers|length }} followers</span></div>
         <div class="no-of-following"><span id="no-of-following">{{ following|length }} following</span></div>
         <div class="email"><span id="email">{{ email }}</span></div>
-        {% if is_following and user_id != user.id %}
-        <button id="unfollow" onclick="follow_or_unfollow('unfollow',{{ user_id }})">Unfollow</button>
-        <button id="follow" style="display: none;" onclick="follow_or_unfollow('follow',{{ user_id }})">Follow</button>
-        {% elif not is_following and user_id != user.id %}
-        <button id="follow" onclick="follow_or_unfollow('follow',{{ user_id }})">Follow</button>
-        <button id="unfollow" style="display: none;" onclick="follow_or_unfollow('unfollow',{{ user_id }})">Unfollow</button>
+        {% if is_following and user_id != user.id and user.is_authenticated %}
+        <button id="unfollow" class="btn btn-info" onclick="follow_or_unfollow('unfollow',{{ user_id }})">Unfollow</button>
+        <button id="follow" class="btn btn-info" style="display: none;" onclick="follow_or_unfollow('follow',{{ user_id }})">Follow</button>
+        {% elif not is_following and user_id != user.id and user.is_authenticated %}
+        <button id="follow" class="btn btn-info" onclick="follow_or_unfollow('follow',{{ user_id }})">Follow</button>
+        <button id="unfollow" class="btn btn-info" style="display: none;" onclick="follow_or_unfollow('unfollow',{{ user_id }})">Unfollow</button>
         {% endif %}
     </div>
     <section id="main_page">

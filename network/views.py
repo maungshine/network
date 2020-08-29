@@ -18,7 +18,8 @@ def index(request):
     page_number = request.GET.get('page')
     page_obj = p.get_page(page_number)
     return render(request, "network/index.html", {
-        'page_obj' : page_obj
+        'page_obj' : page_obj,
+        'following': False
     })
 
 
@@ -78,7 +79,7 @@ def create_post(request):
         post.save()
         return HttpResponseRedirect(reverse('index'))        
 
-
+@login_required
 def following(request):
     following_users = request.user.followed_users.all()
     following_posts = [user.followed_user.user_posts.all() for user in following_users]
@@ -89,7 +90,8 @@ def following(request):
     page_number = request.GET.get('page')
     page_obj = p.get_page(page_number)
     return render(request, "network/index.html", {
-        'page_obj' : page_obj
+        'page_obj' : page_obj,
+        'following': True
     })
 
 def profile(request, user_id):
@@ -115,9 +117,10 @@ def follower_following(request, user_id):
         'following': len([following for following in user.followed_users.all()])
     })        
 
+@login_required
 def is_following(request, check_id):
     following = [following.followed_user.id for following in request.user.followed_users.all()]
-    print(following, check_id)
+    
     if check_id in following:
         return JsonResponse({"is_following" : True})
     return JsonResponse({"is_following" : False})
@@ -139,6 +142,8 @@ def save_post(request, post_id):
     if request.method == 'POST':
         data = json.loads(request.body)
         post = Post.objects.get(pk=post_id)
+        if request.user != post.post_user:
+            return JsonResponse({'message': 'You don\'t have permission to edit this post.'}) 
         post.content = data.get('post_content')
         post.save()
         return JsonResponse({'message': 'successfully saved'})

@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block body %} 
-{% if user.is_authenticated %}
+{% if user.is_authenticated and not following %}
     <div class="container">
         <form id="post-form">
             {% csrf_token %}
