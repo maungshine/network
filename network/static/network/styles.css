@@ -5,6 +5,7 @@
 #main_page {
     display: grid;
     row-gap: 5px;
+    padding: 2em 0em;
 }
 
 .post {

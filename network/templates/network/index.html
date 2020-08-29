@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block body %} 
+{% if user.is_authenticated %}
     <div class="container">
         <form id="post-form">
             {% csrf_token %}
@@ -19,6 +20,7 @@
             </div>
         </form>
     </div>
+{% endif %}
     
     <section id="main_page">
         {% for post in page_obj.object_list %}

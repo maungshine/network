@@ -76,15 +76,19 @@ function follow_or_unfollow (choice, user_id) {
 function edit_post(post_id) {
   const text_area = document.createElement('textarea');
   text_area.id = `edit-content-${post_id}`
+  text_area.className = 'form-control save-text-field'
+  
   text_area.value = document.querySelector(`#content-${post_id}`).innerHTML;
   document.querySelector(`#post-${post_id}`).innerHTML = "";
   document.querySelector(`#post-${post_id}`).append(text_area);
   document.querySelector(`#edit-post-${post_id}`).innerHTML = 'Save';
+  document.querySelector(`#edit-post-${post_id}`).style.bottom = '20px'
   document.querySelector(`#edit-post-${post_id}`).addEventListener('click', () => save_post(post_id))
 }
 
 function save_post (post_id) {
   const content = document.querySelector(`#edit-content-${post_id}`).value;
+  console.log(content)
   const csrf_token = Cookies.get('csrftoken');
   fetch(`save_post/${post_id}`, {
     method: 'POST',
@@ -100,6 +104,7 @@ function save_post (post_id) {
   document.querySelector(`#post-${post_id}`).innerHTML = "";
   document.querySelector(`#post-${post_id}`).append(new_post_content);
   document.querySelector(`#edit-post-${post_id}`).innerHTML = 'Edit';
+  document.querySelector(`#edit-post-${post_id}`).style.bottom = '95px'
   document.querySelector(`#edit-post-${post_id}`).addEventListener('click', () => edit_post(post_id))
 
 

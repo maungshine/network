@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Post, Like, Following
 
@@ -69,7 +70,7 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-
+@login_required
 def create_post(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -121,6 +122,7 @@ def is_following(request, check_id):
         return JsonResponse({"is_following" : True})
     return JsonResponse({"is_following" : False})
 
+@login_required
 def follow_or_unfollow(request, choice, user_id):
     user = User.objects.get(pk=user_id)
     if choice == 'follow':
@@ -132,6 +134,7 @@ def follow_or_unfollow(request, choice, user_id):
         following[0].delete()
         return JsonResponse({'follow_or_unfollow' : 'unfollowed'})
 
+@login_required
 def save_post(request, post_id):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -140,6 +143,7 @@ def save_post(request, post_id):
         post.save()
         return JsonResponse({'message': 'successfully saved'})
 
+@login_required
 def like_post(request, post_id):
         post = Post.objects.get(pk=post_id)
         liked = Like.objects.filter(liked_user=request.user, liked_post=post)
