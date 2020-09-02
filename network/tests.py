@@ -39,7 +39,7 @@ class NetworkTestCase(TestCase):
         self.assertEqual(response.context["page_obj"].object_list.count(), 10)
 
     def test_following(self):
-        """check if status code of following page is 200 and paginate 10posts per page"""
+        """check if response of login user is True and paginate 10posts per following page"""
         user1 = User.objects.get(pk=1)
         user2 = User.objects.get(pk=2)
         for post_num in range(13,18):
